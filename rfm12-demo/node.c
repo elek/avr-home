@@ -23,57 +23,34 @@
 
 
 char buf[10];
-int i = 0;
-ISR(TIMER2_COMPA_vect){
-   //wakeup
-}
 
 void send_data(){
     buf[0]='7';
     buf[1]='4';
     buf[2]='7';
     buf[3]='4';
-    int temp = 0;
-    temp = ds1621_getHrTemp();
-    memset(buf+4,0,6);
-    uint8_t start = 4;
-    if (temp > 0xff) {
-       buf[start] = '0';
-       start++;       
-    }
-    itoa(temp,buf + start,16);
-    uart_puts(buf);
-    uart_puts("\r\n");
-
-       
-    uint8_t str[10];
+    uart_puts("sending \r\n");
+    rfm12_tx(10,0,buf);
     for (int i=0;i<10;i++){
-       str[i] = buf[i];
-    }
-    rfm12_tx(10,0,str);
-    for (int i=0;i<20;i++){
-        rfm12_tick();
-	_delay_ms(10);
+       rfm12_tick();
+       _delay_ms(2);
     }
  
 
 }
 
 int main () {
-    unsigned int c;
     uart_init( UART_BAUD_SELECT(UART_BAUD_RATE,16000000L) ); 
     _delay_ms(100);
-    sei();
-    uart_puts("Starting temp node\r\n");
     rfm12_init();
+    sei();
+    uart_puts("String stored in SRAM\n");
 
-    ds1621_init();
 
     for(;;){
 
        send_data();
        _delay_ms(5000);
-
 
     }
 }

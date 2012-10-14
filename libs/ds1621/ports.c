@@ -4,7 +4,7 @@
 #include "ports.h"
 #include <avr/sleep.h>
 #include <util/atomic.h>
-#include <util/delay.h>x
+#include <util/delay.h>
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -13,27 +13,34 @@
 #define OUTPUT 0x1
 #define INPUT 0x0
 
+#define SDA_RD		DDRD
+#define SDA_PORT	PORTD
+#define SDA_PIN		6
 
-void hold() { _delay_us(17);}
+#define SCL_RD		DDRC
+#define SCL_PORT	PORTC
+#define SCL_PIN		2
+
+void hold() { _delay_us(34);}
 
 void sdaOut(uint8_t value) 
-        { bitWrite(DDRD, 4, 1); bitWrite(PORTD, 4, value); }
+        { bitWrite(SDA_RD, SDA_PIN, 1); bitWrite(SDA_PORT, SDA_PIN, value); }
 
 inline uint8_t sdaIn() { 
-         bitWrite(DDRD,4,0);
-         bitWrite(PORTD,4,1);
-	 return bitRead(PIND, 4); 
+         bitWrite(SDA_RD,SDA_PIN,0);
+         bitWrite(SDA_PORT,SDA_PIN,1);
+	 return bitRead(PIND, SDA_PIN); 
 	}
 
-void sclHi() { hold(); bitWrite(PORTD, 5, 1); }
+void sclHi() { hold(); bitWrite(SCL_PORT,SCL_PIN, 1); }
 
-void sclLo() { hold(); bitWrite(PORTD, 5, 0); }
+void sclLo() { hold(); bitWrite(SCL_PORT, SCL_PIN, 0); }
 
 
 void i2c_init () {
     sdaOut(1);
-    bitWrite(DDRD,4,1);
-    bitWrite(DDRD,5,1);
+    bitWrite(SDA_RD,SDA_PIN,1);
+    bitWrite(SCL_RD,SCL_PIN,1);
     sclHi();
 }
 

@@ -5,10 +5,10 @@
 int main(void)
 {
   // Set Port to OUTPUT
-  DDRD = 0xff;
+  DDRD = 0x80;
   while (1){
-     PORTD = 0xFF;
-     _delay_ms(1000);
+     PORTD = 0x80;
+     _delay_us(10000);
      PORTD = 0x00;
      _delay_ms(1000);
   }
