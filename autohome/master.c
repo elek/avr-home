@@ -25,7 +25,7 @@ int main () {
     rfm12_init();
     
     sei();
-    uart_puts("Master node is starting...\n");
+    uart_puts("Master node is starting...'\r\n");
 
     char buf[10];
     uint8_t *bufptr;
@@ -34,8 +34,6 @@ int main () {
  	if (rfm12_rx_status() == STATUS_COMPLETE)
                 {
                         //so we have received a message
-
-                        //blink the LED
 
 
                         bufptr = rfm12_rx_buffer(); //get the address of the current rx buffer

@@ -15,33 +15,36 @@
 #include <avr/sleep.h>
 #include <uart/uart.h>
 #include <rfm12/rfm12.h>
-#include <avr/interrupt.h>
 
+#include <avr/interrupt.h>
+#include <dht22/dht22.h>
+#include <hardsleep/hardsleep.h>
 #define UART_BAUD_RATE      57600      
 #define POWER_SAVE 0
 
 
 
 char buf[10];
-int i = 0;
-ISR(TIMER2_COMPA_vect){
-   //wakeup
-}
 
-void send_data(){
-    buf[0]='7';
-    buf[1]='4';
-    buf[2]='7';
-    buf[3]='4';
-    int temp = 0;
-    temp = ds1621_getHrTemp();
+void send_data(uint8_t id,uint8_t key,uint16_t value){
+    itoa(id, buf, 16);
+    itoa(key, buf + 2, 16);
     memset(buf+4,0,6);
     uint8_t start = 4;
-    if (temp > 0xff) {
+    if (value <= 0xff) {
        buf[start] = '0';
        start++;       
     }
-    itoa(temp,buf + start,16);
+    if (value <= 0xfff) {
+       buf[start] = '0';
+       start++;       
+    }
+     if (value <= 0xf) {
+       buf[start] = '0';
+       start++;       
+    }
+ 
+    itoa(value,buf + start,16);
     uart_puts(buf);
     uart_puts("\r\n");
 
@@ -53,7 +56,7 @@ void send_data(){
     rfm12_tx(10,0,str);
     for (int i=0;i<20;i++){
         rfm12_tick();
-	_delay_ms(10);
+	_delay_ms(100);
     }
  
 
@@ -66,13 +69,20 @@ int main () {
     sei();
     uart_puts("Starting temp node\r\n");
     rfm12_init();
-
-    ds1621_init();
-
-    for(;;){
-
-       send_data();
-       _delay_ms(5000);
+    hardsleep_init();
+    _delay_ms(1000);
+//    ds1621_init();
+   for(;;){
+      dht22_readData();
+      send_data(0x74,0x74,result.lastTemperature);
+      send_data(0x74,0x75,result.lastHumidity);
+      send_data(0x74,0x76,result.error);
+      rfm12_power_down();
+      //power down for 60 sec
+      hardsleep_sleep(14);
+     //_delay_ms(3000);
+      _delay_ms(100); 
+      rfm12_power_up();
 
 
     }
