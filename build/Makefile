@@ -6,8 +6,10 @@ UPLOAD_RATE = 57600
 AVRDUDE_PROGRAMMER = arduino
 #AVRDUDE_PROGRAMMER=usbasp
 
+#include $(BUILD_DIR)/arduino-pro-mini-33
 #include $(BUILD_DIR)/attiny45
-include $(BUILD_DIR)/arduino-pro-mini-33
+include $(BUILD_DIR)/attiny84
+#include $(BUILD_DIR)/jeenode
 AVR_TOOLS_PATH = /usr/bin
 AVRDUDE_PATH =/usr/bin
 AVR_LIB=/home/eszti/projects/avr2/libs

@@ -78,7 +78,7 @@
 //see rfm12.c for more documentation
 void rfm12_init(void);
 void rfm12_tick(void);
-
+uint16_t rfm12_status(void);
 
 #if RFM12_USE_RX_CALLBACK
 /* set the callback function pointer */
@@ -294,3 +294,5 @@ extern rfm12_control_t ctrl;
 #include "include/rfm12_livectrl.h"
 
 #endif /* _RFM12_H */
+
+

@@ -384,6 +384,9 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 	RFM12_INT_ON();
 }
 
+uint16_t rfm12_status(void) {
+    return rfm12_read(0x0000);
+}
 
 //! The tick function implements collision avoidance and initiates transmissions.
 /** This function has to be called periodically.
