@@ -28,8 +28,7 @@
 
 #if defined(__AVR_ATmega168P__) || \
     defined(__AVR_ATtiny48__) ||   \
-    defined(__AVR_ATtiny88__) ||   \
-    defined(__AVR_ATtiny84__)
+    defined(__AVR_ATtiny88__) 
 
 #define EXTERNAL_INTERRUPT              INT0_vect
 #define RX_TIMER_INTERRUPT              TIMER0_COMPA_vect
@@ -79,6 +78,39 @@
 #define disable_rx_timer_interrupt()  TIMSK0 &= ~(1 << OCIE0A)
 #define disable_tx_timer_interrupt()  TIMSK0 &= ~(1 << OCIE0B)
 #define disable_external_interrupt()  GIMSK &= ~(1 << INT0)
+
+#define configure_external_interrupt() MCUCR = (MCUCR & ~(1 << ISC01 | 1 << ISC01)) | (1 << ISC01)
+#define configure_timer()              TCCR0A = 0
+#define configure_timer_prescale()     TCCR0B = (1 << CS01)
+
+#define configure_rx_pin()     DDRB &= ~(1 << PB1)
+#define configure_rx_pullup()  PORTB |= (1 << PB1)
+#define configure_tx_pin()     DDRB |= (1 << PB0)
+
+#define set_tx_pin()    PORTB |= (1 << PB0)
+#define clear_tx_pin()  PORTB &= ~(1 << PB0)
+#define read_rx_pin()   PINB & (1 << PB1)
+
+#define COUNTER         TCNT0
+#define RX_NEXT_COUNT   OCR0A
+#define TX_NEXT_COUNT   OCR0B
+
+#elif defined(__AVR_ATtiny84__)
+
+#define EXTERNAL_INTERRUPT            INT0_vect
+#define RX_TIMER_INTERRUPT            TIM0_COMPA_vect
+#define TX_TIMER_INTERRUPT            TIM0_COMPB_vect
+
+#define enable_rx_timer_interrupt()   TIMSK0 |= (1 << OCIE0A)
+#define enable_tx_timer_interrupt()   TIMSK0 |= (1 << OCIE0B)
+#define enable_external_interrupt()   GIMSK |= (1 << INT0)
+#define disable_rx_timer_interrupt()  TIMSK0 &= ~(1 << OCIE0A)
+#define disable_tx_timer_interrupt()  TIMSK0 &= ~(1 << OCIE0B)
+#define disable_external_interrupt()  GIMSK &= ~(1 << INT0)
+
+#define reset_rx_interrupt_flag()       TIFR0 |= (1 << OCF0A)
+#define reset_tx_interrupt_flag()       TIFR0 |= (1 << OCF0B)
+#define reset_external_interrupt_flag() GIFR |= (1 << INTF0)
 
 #define configure_external_interrupt() MCUCR = (MCUCR & ~(1 << ISC01 | 1 << ISC01)) | (1 << ISC01)
 #define configure_timer()              TCCR0A = 0

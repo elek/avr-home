@@ -28,7 +28,7 @@
 /*
  * Controls whether code for transmitting data be compiled
  */
-#define VUART_TRANSMIT_SUPPORT 0
+#define VUART_TRANSMIT_SUPPORT 1
 /*
  * Controls whether code for receiving data be compiled
  */
