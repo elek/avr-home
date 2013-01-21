@@ -165,6 +165,8 @@ applet/core.a: $(OBJ_MODULES) applet
 .c.o:
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
+.cpp.oxx:
+	$(CXX) -c $(ALL_CFLAGS) $< -o $@ 
 
 # Compile: create assembler files from C source files.
 .c.s:
